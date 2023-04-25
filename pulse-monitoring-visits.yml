@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visits
+spec:
+  selector:
+    matchLabels:
+      app: visits
+  replicas: 0
+  template:
+    metadata:
+      labels:
+        app: visits
+    spec:
+      containers:
+      - name: visits
+        image: natliia999/visits
+        resources:
+          limits:
+            memory: "200Mi"
+            cpu: "500m"
+        env: 
+        - name: CONFIG_SERVER_HOST
+          valueFrom: 
+           configMapKeyRef:
+            key: configServer
+            name: pm-config-map
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+           secretKeyRef:
+            key: postgresPassword
+            name: pm-secret
+        ports:
+        - containerPort: 9292
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visits
+spec:
+  selector:
+    app: visits
+  ports:
+  - port: 9292
+    targetPort: 9292

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pm-config-map
+data:
+  configServer: config-server
+  
